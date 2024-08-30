@@ -23,10 +23,10 @@ const SideBar = ({ user }: SiderbarProps) => {
           <Image
             src="/icons/logo.svg"
             alt="FinHub logo"
-            height={34}
-            width={34}
-            className="size-[35px]
-                    max-xl:size-14
+            height={30}
+            width={30}
+            className="ml-2 size-[30px]
+                    max-xl:size-[40px]
                     "
           />
           <h1 className="sidebar-logo">FinHub</h1>
@@ -79,7 +79,9 @@ const SideBar = ({ user }: SiderbarProps) => {
             );
           })
         }
+        USER
       </nav>
+      FOOTER
     </section>
   );
 };
