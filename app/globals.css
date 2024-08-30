@@ -251,9 +251,25 @@
   .mobilenav-sheet {
     @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
   }
+  /* Best to have padding and items center for alignment + control width size of link div  */
+  .mobilenav-sheet-link {
+    @apply flex gap-3 rounded-lg p-4 items-center w-full max-w-60
+  }
+
+  .mobilenav-sheet-img {
+    @apply pt-1
+  }
+
+  .mobilenav-sheet-link-text {
+    @apply text-14 p-1 font-ibm-plex-serif text-black-1 font-semibold
+  }
 
   .mobilenav-sheet_close {
-    @apply flex gap-3 items-center p-4 rounded-lg w-full max-w-60;
+    @apply flex gap-3 items-center p-4 rounded-lg w-full ;
+  }
+
+  .mobilenav-label {
+    @apply text-black-1 font-ibm-plex-serif font-bold text-26
   }
 
   /* PlaidLink */
@@ -370,7 +386,7 @@
  /* Sidebar span props*/ w-fit h-screen pt-8 /* width to fit child element content, 100% viewport height, padding top 32px*/
  /* Sidebar color props*/ bg-white text-white
  /* Sidebar border props*/ border-r border-gray-200  /* add to right side, color settings*/ 
- /* Sidebar dynamic props*/  max-md:hidden  /* Sidebar hidden at around 748 px*/
+ /* Sidebar dynamic props*/  max-md:hidden  /* Sidebar hidden at around 768 px*/
  /* Sidebar dynamic padding props*/ sm:p-4 /* padding at 640px*/
  /* Sidebar dynamic padding props*/ xl:p-6 /* padding at 1280px*/
  /* Sidebar dynamic padding props*/ 2xl:w-[355px] /* padding at 1536px*/
