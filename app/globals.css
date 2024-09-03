@@ -154,20 +154,57 @@
   }
 
   /* Right sidebar */
+
+  .right-sidebar-pane {
+    @apply hidden xl:flex flex-col shadow-xl xl:w-[355px] border-l-gray-400 h-screen 
+    no-scrollbar xl:overflow-y-scroll 
+    /* Here we ensure that when we display content to the user via sidebar, we hide the scrollbar
+    whilst ensuring that there is still a scrollable capability */
+
+  }
+
   .right-sidebar {
-    @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[355px] xl:overflow-y-scroll !important;
+    @apply no-scrollbar hidden h-full max-h-screen flex-col border-l border-gray-200 xl:flex w-[355px] xl:overflow-y-scroll !important;
+  }
+
+  /* profile  */
+
+  .profile-screen {
+    @apply flex flex-col w-full pb-10
+  }
+
+  .profile-banner-screen {
+    /* add css to ensure bg covers element space and also avoid repetition */
+    @apply flex bg-gradient-mesh h-[120px] bg-cover bg-no-repeat
   }
 
   .profile-banner {
     @apply h-[120px] w-full bg-gradient-mesh bg-cover bg-no-repeat;
   }
 
+  /* to contain the profile img circle and place it relative to this container div */
+  .profile-img-screen {
+    @apply flex relative justify-center
+  }
+
+  .profile-info-screen {
+    @apply flex flex-col pt-16 px-6
+  }
+
+  .profile-name-info {
+    @apply text-24 text-gray-800 font-semibold 
+  }
+
+  .profile-email-info {
+    @apply text-16 font-ibm-plex-serif
+  }
+
   .profile {
     @apply relative flex px-6 max-xl:justify-center;
   }
-
+ /* using negative params for top , absolute pos */
   .profile-img {
-    @apply flex-center absolute -top-8 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
+    @apply absolute -top-12 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
   }
 
   .profile-details {
@@ -182,6 +219,35 @@
     @apply text-16 font-normal text-gray-600;
   }
 
+  /* budget details */
+
+  .budget-details-screen {
+    @apply flex xl:h-[140px]
+  }
+
+  /* bank details */
+
+  .bank-title {
+    @apply flex justify-between w-full py-2
+  }
+
+  .my-banks-snippet {
+    @apply font-semibold text-gray-900 text-18  justify-center
+  }
+
+  .add-bank-link {
+    @apply flex gap-2 
+  }
+
+  .add-bank-title {
+    @apply font-semibold text-gray-600 text-14
+  }
+
+  .bank-details-screen {
+    @apply flex flex-col w-full px-6 py-5 justify-between
+  }
+
+
   .banks {
     @apply flex flex-col justify-between gap-8 px-6 py-8;
   }
@@ -191,7 +257,6 @@
     @apply flex h-screen max-h-screen w-full flex-col gap-8 bg-gray-25 p-8 xl:py-12;
   }
 
-  /* My Banks */
   .transactions {
     @apply flex max-h-screen w-full flex-col gap-8 overflow-y-scroll bg-gray-25 p-8 xl:py-12;
   }
@@ -221,6 +286,10 @@
   }
 
   /* Bank Card */
+
+  /* some tricky css here, so bank card sets the total space , content takes up a fixed width of 228px, remaining space 
+  used by icons, since items-end at flex-col will horizontally place the icons toward the rightmost of the card's end. Plus we
+  also ensure the child icons are spaced apart */
   .bank-card {
     @apply relative flex h-[190px] w-full max-w-[320px] justify-between rounded-[20px] border border-white bg-bank-gradient shadow-creditCard backdrop-blur-[6px];
   }
