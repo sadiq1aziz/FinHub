@@ -27,7 +27,7 @@ const ibmPlexSerif = IBM_Plex_Serif({
 });
 export const metadata: Metadata = {
   title: "FinHub Banking",
-  description: "A Global Finance application",
+  description: "A Personal Finance Application",
   icons: {
     icon: "/icons/logo.svg",
   },
