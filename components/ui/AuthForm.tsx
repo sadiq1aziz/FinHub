@@ -12,6 +12,7 @@ import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signIn, signUp } from "@/lib/actions/user.actions";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
@@ -29,45 +30,43 @@ const AuthForm = ({ type }: { type: string }) => {
       city: "",
       ssn: "",
       dateOfBirth: "",
-      address: "",
+      address1: "",
       postalCode: "",
       firstName: "",
       lastName: "",
-      state: ""
+      state: "",
     },
   });
 
   // 2. Define a submit handler.
-  const onSubmit = async(values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
 
     //perform async actions
     try {
-      // if (type == 'sign-up'){
-      //   const newUser = await signUp(data);
-      //   setUser(newUser);
-      // }
+      if (type == "sign-up") {
+        const newUser = await signUp(data);
+        setUser(newUser);
+      }
 
-      // if (type === 'sign-in'){
-      //   const response = await signIn({
-      //     email: values.email,
-      //     password: values.password 
-      //   })
-      
-      //  if (response){
-      //     router.push('/');
-      //  }   
-      console.log(values);  
-      setIsLoading(false);
-    } catch (error){
-      console.log(error);
-    } finally{
+      if (type === "sign-in") {
+        const response = await signIn({
+          email: data.email,
+          password: data.password,
+        });
+
+        if (response) {
+          router.push("/");
+        }
+      }
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
       setIsLoading(false);
     }
-    
-  }
+  };
   return (
     <section className="auth-form">
       {/* header will consist of the logo and the authentication header message ie sign in/up */}
@@ -102,11 +101,12 @@ const AuthForm = ({ type }: { type: string }) => {
             {user ? "Please link your account" : "Please enter your details"}
           </p>
         </div>
-
-        {/* Here we check for bank account link */}
-        {user ? (
-          <div className="flex flex-col gap-4">{/* Plaid Bank Account */}</div>
-        ) : (
+      </header>
+      {/* Here we check for bank account link */}
+      {user ? (
+        <div className="flex flex-col gap-4">{/* Plaid Bank Account */}</div>
+      ) : (
+        <>
           <div className="flex flex-col gap-4">
             {
               <Form {...form}>
@@ -139,7 +139,7 @@ const AuthForm = ({ type }: { type: string }) => {
                       <CustomInput
                         control={form.control}
                         fieldLabel={"Address"}
-                        fieldName={"address"}
+                        fieldName={"address1"}
                         fieldPlaceholder={"Example: 1234 broadway street"}
                       />
                       <div className="flex gap-2">
@@ -170,37 +170,20 @@ const AuthForm = ({ type }: { type: string }) => {
                           fieldPlaceholder={"Example: 1134"}
                         />
                       </div>
-                      <CustomInput
-                        control={form.control}
-                        fieldLabel={"Email"}
-                        fieldName={"email"}
-                        fieldPlaceholder={"Enter your email"}
-                      />
-                      <CustomInput
-                        control={form.control}
-                        fieldLabel={"Password"}
-                        fieldName={"password"}
-                        fieldPlaceholder={"Enter your password"}
-                      />
                     </div>
                   )}
-                  {type === "sign-in" && (
-                    <div className="flex flex-col gap-4">
-                      <CustomInput
-                        fieldLabel="Email"
-                        fieldName="email"
-                        fieldPlaceholder={"Enter your Email"}
-                        control={form.control}
-                      />
-                      <CustomInput
-                        control={form.control}
-                        fieldLabel="Password"
-                        fieldName="password"
-                        fieldPlaceholder={"Enter your password"}
-                      />
-                    </div>
-                  )}
-
+                  <CustomInput
+                    fieldLabel="Email"
+                    fieldName="email"
+                    fieldPlaceholder={"Enter your Email"}
+                    control={form.control}
+                  />
+                  <CustomInput
+                    control={form.control}
+                    fieldLabel="Password"
+                    fieldName="password"
+                    fieldPlaceholder={"Enter your password"}
+                  />
                   {/* on submit we display loading msg and disable button */}
                   <div className="flex flex-col gap-2 w-full">
                     <Button
@@ -216,7 +199,7 @@ const AuthForm = ({ type }: { type: string }) => {
                       ) : type === "sign-in" ? (
                         "Sign In"
                       ) : (
-                        "Sign Out"
+                        "Sign Up"
                       )}
                     </Button>
                   </div>
@@ -224,22 +207,22 @@ const AuthForm = ({ type }: { type: string }) => {
               </Form>
             }
           </div>
-        )}
-      </header>
-      <footer className="flex justify-center">
-        <p>
-          {type === "sign-in"
-            ? "Don't have an account?"
-            : "Already have an account?"}
-        </p>
-        &nbsp;
-        <Link
-          href={type === "sign-in" ? "/sign-up" : "sign-in"}
-          className="text-blue-600"
-        >
-          {type === "sign-up" ? "Sign In" : "Sign Up"}
-        </Link>
-      </footer>
+          <footer className="flex justify-center">
+            <p>
+              {type === "sign-in"
+                ? "Don't have an account?"
+                : "Already have an account?"}
+            </p>
+            &nbsp;
+            <Link
+              href={type === "sign-in" ? "/sign-up" : "sign-in"}
+              className="text-blue-600"
+            >
+              {type === "sign-up" ? "Sign In" : "Sign Up"}
+            </Link>
+          </footer>
+        </>
+      )}
     </section>
   );
 };

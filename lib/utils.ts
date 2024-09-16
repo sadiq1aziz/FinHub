@@ -27,7 +27,7 @@ export const authFormSchema = (type: string) =>
       .string()
       .min(1, { message: "Password is required" })
       .min(8, { message: "Password must be at least 8 characters long" }),
-    address:
+    address1:
       type === "sign-in"
         ? z.string().optional()
         : z.string().min(1, { message: "Address is required" }),
