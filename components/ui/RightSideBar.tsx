@@ -11,14 +11,14 @@ const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
         <div className="profile-banner-screen"></div>
         <div className="profile-img-screen">
           <div className="profile-img">
-            <span className="text-indigo-600 text-5xl font-bold p-3.5">
-              {user.firstName[0]}
+            <span className="text-indigo-600 text-5xl font-bold p-5">
+              {user.name[0]}
             </span>
           </div>
         </div>
         <div className="profile-info-screen">
           <h1 className="profile-name-info">
-            {user.firstName} {user.lastName}
+            {user.name}
           </h1>
           <h2 className="profile-email-info">{user.email}</h2>
         </div>
@@ -41,12 +41,12 @@ const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
         {/* banks is an array of account objects therefore for any iterable we will need to use key */}
         {banks?.length > 0 &&  (
             // center items centrally across cross and main axes
-            <div className="flex flex-1 relative flex-col justify-center items-center gap-4">
+            <div className="flex flex-1 relative flex-col justify-center items-center mr-3">
                 <div className="relative z-10">
                     <BankCard
                         key={banks[0].$id} 
                         account={banks[0]}
-                        userName={`${user.firstName} ${user.lastName}`}
+                        userName={`${user.name}`}
                         showBalance={false}
                     />
                 </div>
@@ -55,7 +55,7 @@ const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
                         <BankCard
                         key={banks[0].$id} 
                         account={banks[0]}
-                        userName={`${user.firstName} ${user.lastName}`}
+                        userName={`${user.name}`}
                         showBalance={false}
                     />
                     </div>

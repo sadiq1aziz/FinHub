@@ -6,9 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
+import Footer from "./Footer";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
 
 // we pass user data to the sidebar to render content accordingly
-const SideBar = ({ user }: SiderbarProps) => {
+const SideBar =  ({ user }: SiderbarProps) => {
   const pathName = usePathname();
 
   return (
@@ -81,7 +83,7 @@ const SideBar = ({ user }: SiderbarProps) => {
         }
         USER
       </nav>
-      FOOTER
+      <Footer user={user} type='desktop'/>
     </section>
   );
 };
