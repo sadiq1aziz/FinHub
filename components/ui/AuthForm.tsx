@@ -13,6 +13,7 @@ import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
@@ -43,11 +44,23 @@ const AuthForm = ({ type }: { type: string }) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
-
     //perform async actions
     try {
       if (type == "sign-up") {
-        const newUser = await signUp(data);
+        //set data
+        const userData = {
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          address1: data.address1!,
+          ssn: data.ssn!,
+          dateOfBirth: data.dateOfBirth!,
+          state: data.state!,
+          city: data.city!,
+          postalCode: data.postalCode!,
+          email: data.email,
+          password: data.password,
+        };
+        const newUser = await signUp(userData);
         setUser(newUser);
       }
 
@@ -104,7 +117,12 @@ const AuthForm = ({ type }: { type: string }) => {
       </header>
       {/* Here we check for bank account link */}
       {user ? (
-        <div className="flex flex-col gap-4">{/* Plaid Bank Account */}</div>
+        <div className="flex flex-col gap-4">
+          {
+            /* Plaid Bank Account */
+            <PlaidLink user={user} variant="primary" />
+          }
+        </div>
       ) : (
         <>
           <div className="flex flex-col gap-4">
@@ -161,7 +179,7 @@ const AuthForm = ({ type }: { type: string }) => {
                           control={form.control}
                           fieldLabel={"Date Of Birth"}
                           fieldName={"dateOfBirth"}
-                          fieldPlaceholder={"DD/MM/YYYY"}
+                          fieldPlaceholder={"YYYY-MM-DD"}
                         />
                         <CustomInput
                           control={form.control}
