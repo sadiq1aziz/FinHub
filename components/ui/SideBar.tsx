@@ -7,7 +7,8 @@ import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
 import Footer from "./Footer";
-import { getLoggedInUser } from "@/lib/actions/user.actions";
+import PlaidLink from "./PlaidLink";
+
 
 // we pass user data to the sidebar to render content accordingly
 const SideBar =  ({ user }: SiderbarProps) => {
@@ -81,7 +82,7 @@ const SideBar =  ({ user }: SiderbarProps) => {
             );
           })
         }
-        USER
+        <PlaidLink user={user}/>
       </nav>
       <Footer user={user} type='desktop'/>
     </section>

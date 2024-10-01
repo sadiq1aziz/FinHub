@@ -1,5 +1,3 @@
-import { formatCurrency } from "@/lib/utils";
-import React from "react";
 import CurrencyCounter from "./CurrencyCounter";
 import DoughnutChart from "./DoughnutChart";
 

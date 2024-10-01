@@ -278,7 +278,7 @@
   }
 
   .header-box-title {
-    @apply text-24 lg:text-30 font-semibold text-gray-900;
+    @apply text-24 lg:text-30 font-bold text-gray-900;
   }
 
   .header-box-subtext {
@@ -351,7 +351,7 @@
   }
 
   .plaidlink-default {
-    @apply flex !justify-start cursor-pointer gap-3 rounded-lg !bg-transparent flex-row;
+    @apply flex !justify-start cursor-pointer gap-2.5 rounded-lg !bg-transparent flex-row;
   }
 
   /* Auth */

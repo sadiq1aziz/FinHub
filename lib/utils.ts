@@ -9,7 +9,7 @@ import { z } from "zod";
 const nameRegex = /^[A-Za-z\s'-]+$/;
 const ssnRegex = /^\d{4}$/;
 const postalCodeRegex = /^\d{5}$/;
-const dobRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/;
+const dobRegex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -169,8 +169,24 @@ export function formatCurrency(amount: number): string {
 }
 export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
 
-export const removeSpecialCharacters = (value: string) => {
-  return value.replace(/[^\w\s]/gi, "");
+export const removeSpecialCharacters = (value: string | undefined) => {
+  if (value === undefined || value === null) {
+    console.error("Received an undefined or null value:", value);
+    return ""; // Handle the case appropriately
+  }
+
+  if (typeof value !== "string") {
+    console.error("Expected a string but received:", typeof value, value);
+    return "";
+  }
+
+  try {
+    const res = value.replace(/[^\w\s]/gi, "");
+    return res;
+  } catch (error) {
+    console.error("An error occurred in removeSpecialCharacters:", error);
+    return "";
+  }
 };
 
 interface UrlQueryParams {
