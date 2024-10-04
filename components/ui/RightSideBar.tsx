@@ -2,8 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import BankCard from "./BankCard";
+import { countTransactionCategories } from "@/lib/utils";
+import { Category } from "./Category";
 
 const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
+
+  const categories: CategoryCount[] = countTransactionCategories(transactions);
+  console.log(categories);
   return (
     <aside className="right-sidebar-pane">
       {/* section for profile info */}
@@ -28,14 +33,14 @@ const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
       <section className="bank-details-screen">
         <div className="bank-title">
           <h2 className="my-banks-snippet">My Banks</h2>
-          <Link href="/" className="add-bank-link">
+          <Link href="/my-banks" className="add-bank-link">
             <Image
-              src="/icons/plus.svg"
+              src="/icons/arrow-right.svg"
               width={20}
               height={20}
               alt="plus logo"
             />
-            <div className="add-bank-title">Add Bank</div>
+            <div className="add-bank-title">View Banks</div>
           </Link>
         </div>
         {/* banks is an array of account objects therefore for any iterable we will need to use key */}
@@ -62,10 +67,22 @@ const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
                 )}
             </div>
         )}
+
+        
       </section>
 
-      {/* section for budget details */}
-      <section className="budget-details-screen"></section>
+      <div className="ml-6 mt-10 flex flex-1 flex-col gap-6"> 
+            <h2 className="header-2">
+              Top Categories
+            </h2>
+            <div className="space-y-5">
+              {categories.map( (category, index) => {
+                  return (
+                    <Category key={category.name}  category={category}  />
+                  )
+              })}
+            </div>
+        </div>
     </aside>
   );
 };
