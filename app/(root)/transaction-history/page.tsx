@@ -4,11 +4,12 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 import React from "react";
 import { formatCurrency } from "@/lib/utils";
 import TransactionTable from "@/components/ui/TransactionTable";
+import { Pagination } from "@/components/ui/Pagination";
 
 const TransactionHistory = async ({
   searchParams: { id, page },
 }: SearchParamProps) => {
-  const currentPage = Number(page as string);
+  const currentPage = Number(page as string) || 1;
 
   //fetch user info from session
   const loggedInUser = await getLoggedInUser();
@@ -37,6 +38,20 @@ const TransactionHistory = async ({
 
   //fetch account data using ID
   const account = await getAccount({ appwriteItemId });
+
+  const definedRowCount = 10;
+  const transactionsCount = account?.transactions.length;
+  const totalPages = Math.ceil(transactionsCount / definedRowCount);
+
+  //calculate index of the transactions on the current page
+  const indexLastTransaction = definedRowCount * currentPage;
+  const indexFirstTransaction = indexLastTransaction - definedRowCount;
+
+  //obtain current transactions to render on page
+  const currentTransactions = account?.transactions.slice(
+    indexFirstTransaction,
+    indexLastTransaction
+  );
 
   return (
     <div className="transactions">
@@ -70,8 +85,14 @@ const TransactionHistory = async ({
         </div>
       </div>
       <section>
-        <TransactionTable transactions={account?.transactions}/>
+        <TransactionTable transactions={currentTransactions} />
       </section>
+
+      {totalPages > 1 && (
+        <div className="my-4 w-full">
+          <Pagination page={currentPage} totalPages={totalPages} />
+        </div>
+      )}
     </div>
   );
 };

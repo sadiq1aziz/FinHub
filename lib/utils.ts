@@ -14,7 +14,15 @@ const dobRegex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
+export function paymentTransferFormSchema() {
+  return z.object({
+    email: z.string().email("Invalid email address"),
+    name: z.string().min(4, "Transfer note is too short"),
+    amount: z.string().min(4, "Amount is too short"),
+    senderBank: z.string().min(4, "Please select a valid bank account"),
+    sharableId: z.string().min(8, "Please select a valid sharable Id"),
+  });
+};
 // zod is a form validator component
 // Here we enter in the attributes for validation in our form
 export const authFormSchema = (type: string) =>
@@ -102,6 +110,10 @@ export const authFormSchema = (type: string) =>
                 "Last name can only contain letters, spaces, hyphens, or apostrophes",
             }),
   });
+
+
+
+
 
 // FORMAT DATE TIME
 export const formatDateTime = (dateString: Date) => {

@@ -7,8 +7,8 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 
 const Home = async ({ searchParams: { id, page }} : SearchParamProps) => {
 
-  const currentPage = Number(page as string);
-
+  const currentPage = Number(page as string) || 1;
+  console.log(currentPage);
   //fetch user info from session 
   const loggedInUser = await getLoggedInUser();
 
@@ -63,7 +63,7 @@ const Home = async ({ searchParams: { id, page }} : SearchParamProps) => {
 
           />
         </div>
-        <RightSideBar user={loggedInUser} transactions={accounts?.transactions} banks={accountsData.slice(0, 2)} />
+        <RightSideBar user={loggedInUser} transactions={account?.transactions} banks={accountsData.slice(0, 2)} />
       </section>
     </div>
   );

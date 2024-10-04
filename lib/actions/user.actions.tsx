@@ -97,7 +97,7 @@ export const signUp = async ({password, ...data}: SignUpParams) => {
 };
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {
-  console.log("fetching user info with id", userId);
+
   try {
     const { database } = await createAdminClient();
     const response = await database.listDocuments(
@@ -106,7 +106,6 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
       // checking for docs in appwrite that matches the value unde the userId column
       [Query.equal('userId', [userId])]
     );
-    console.log("response is ",response);
 
     return parseStringify(response.documents[0]);
   } catch (error) {
@@ -306,5 +305,28 @@ export const exchangePublicToken = async ({
   } catch (error) {
     // Log any errors that occur during the process
     console.error("An error occurred while creating exchanging token:", error);
+  }
+};
+
+
+// get specific bank from bank collection by account id
+export const getBankByAccountId = async ({
+  accountId,
+}: getBankByAccountIdProps) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal("accountId", [accountId])]
+    );
+
+    if (bank.total !== 1) return null;
+
+    return parseStringify(bank.documents[0]);
+  } catch (error) {
+    console.error("Error", error);
+    return null;
   }
 };
