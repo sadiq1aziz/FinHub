@@ -114,7 +114,6 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
 };
 
 export const signIn = async ({ email, password }: signInProps) => {
-  try {
     const { account } = await createAdminClient();
 
     //create session off of retrieved account from appwrite client
@@ -131,10 +130,6 @@ export const signIn = async ({ email, password }: signInProps) => {
     //fetch actual user record from db
     const user = await getUserInfo({userId: session.userId});
     return parseStringify(user);
-
-  } catch (error) {
-    console.log("Error signing into application", error);
-  }
 };
 
 export async function getLoggedInUser() {
