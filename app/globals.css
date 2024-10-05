@@ -320,7 +320,7 @@
   .mobilenav-sheet {
     @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
   }
-  /* Best to have padding and items center for alignment + control width size of link div  */
+  /* Best to huthve puthdding and items center for alignment + control width size of link div  */
   .mobilenav-sheet-link {
     @apply flex gap-3 rounded-lg p-4 items-center w-full max-w-60
   }
@@ -356,7 +356,7 @@
 
   /* Auth */
   .auth-asset {
-    @apply flex h-screen w-full sticky top-0 items-center justify-end bg-sky-1 max-lg:hidden;
+    @apply flex flex-col h-screen w-full sticky top-0 items-center justify-center bg-sky-1 max-lg:hidden p-5;
   }
 
   /* Auth Form */

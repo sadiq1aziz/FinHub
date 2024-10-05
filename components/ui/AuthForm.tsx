@@ -14,10 +14,12 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
 import PlaidLink from "./PlaidLink";
+import { AppwriteException } from "node-appwrite";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
   //invoke authform to perform input validation based on user action to sign in or sign up
   const formSchema = authFormSchema(type);
@@ -74,10 +76,13 @@ const AuthForm = ({ type }: { type: string }) => {
           router.push("/");
         }
       }
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
+    } catch (error: any) {
       setIsLoading(false);
+      if (error.message === "Invalid credentials. Please check the email and password."){
+        setErrorMessage("Invalid Credentials. Please enter correct details.");
+      } else {
+        setErrorMessage("An unexpected error has occured.");
+      }
     }
   };
   return (
@@ -220,6 +225,11 @@ const AuthForm = ({ type }: { type: string }) => {
                         "Sign Up"
                       )}
                     </Button>
+                    {errorMessage && (
+                      <div className="mt-4 p-2 text-sm text-red-600">
+                        {errorMessage}
+                      </div>
+                    )}
                   </div>
                 </form>
               </Form>
