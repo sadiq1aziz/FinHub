@@ -9,17 +9,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomInput from "./CustomInput";
-import { authFormSchema } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { authFormSchema, signup_message } from "@/lib/utils";
+import { Info, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
 import PlaidLink from "./PlaidLink";
 import { AppwriteException } from "node-appwrite";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
+import InfoTooltip from "./InfoToolTip";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   //invoke authform to perform input validation based on user action to sign in or sign up
   const formSchema = authFormSchema(type);
@@ -78,7 +85,10 @@ const AuthForm = ({ type }: { type: string }) => {
       }
     } catch (error: any) {
       setIsLoading(false);
-      if (error.message === "Invalid credentials. Please check the email and password."){
+      if (
+        error.message ===
+        "Invalid credentials. Please check the email and password."
+      ) {
         setErrorMessage("Invalid Credentials. Please enter correct details.");
       } else {
         setErrorMessage("An unexpected error has occured.");
@@ -209,22 +219,27 @@ const AuthForm = ({ type }: { type: string }) => {
                   />
                   {/* on submit we display loading msg and disable button */}
                   <div className="flex flex-col gap-2 w-full">
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="form-btn flex"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 size={20} className="animate-spin" />
-                          &nbsp; Loading...
-                        </>
-                      ) : type === "sign-in" ? (
-                        "Sign In"
-                      ) : (
-                        "Sign Up"
+                    <div className="flex items-end gap-2">
+                      <Button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`form-btn flex ${type === "sign-in" ? "w-full" : "w-[95%]"} ml-0`}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 size={20} className="animate-spin" />
+                            &nbsp; Loading...
+                          </>
+                        ) : type === "sign-in" ? (
+                          "Sign In"
+                        ) : (
+                          "Sign Up"
+                        )}
+                      </Button>
+                      {type === "sign-up" && (
+                        <InfoTooltip message={signup_message}/>
                       )}
-                    </Button>
+                    </div>
                     {errorMessage && (
                       <div className="mt-4 p-2 text-sm text-red-600">
                         {errorMessage}
