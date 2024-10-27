@@ -82,7 +82,7 @@ const SideBar =  ({ user }: SiderbarProps) => {
             );
           })
         }
-        <PlaidLink user={user}/>
+        <PlaidLink user={user} variant="default"/>
       </nav>
       <Footer user={user} type='desktop'/>
     </section>
