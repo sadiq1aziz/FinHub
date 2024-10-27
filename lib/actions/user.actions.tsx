@@ -2,7 +2,7 @@
 import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
-import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
+import { encryptId, extractCustomerIdFromUrl, handlePlaidError, isAxiosError, isCreateError, parseStringify, TokenParams } from "../utils";
 import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from "plaid";
 import { plaidClient } from "../plaid";
 import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
@@ -216,7 +216,7 @@ export const createBankAccount = async( {userId,
 }
 
 
-export const createLinkToken = async (user: User) => {
+export const createLinkToken = async (user: User, variant?: string, access_token?: string) => {
   try {
     const tokenParams = {
       user: {
@@ -228,13 +228,23 @@ export const createLinkToken = async (user: User) => {
       // in this case we need the auth product to authenticate bank account info
       products: ["auth"] as Products[],
       country_codes: ["US"] as CountryCode[],
-    };
+    } as TokenParams;
+
+      // If accessToken exists, set update mode for re-authentication
+      if (access_token) {
+        tokenParams.access_token = access_token;
+      }
+
+      if (variant && variant === 'addConsent'){
+        tokenParams.additional_consented_products = ["transactions"] as Products[];
+      }
 
     const response = await plaidClient.linkTokenCreate(tokenParams);
     //get link token response
     return parseStringify({linkToken : response.data.link_token});
   } catch (error) {
     console.log('Error calling linkTokenCreate API', error);
+
   }
 };
 

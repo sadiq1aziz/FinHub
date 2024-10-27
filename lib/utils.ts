@@ -3,6 +3,8 @@ import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
+import { AxiosError } from 'axios';
+import { CountryCode, Products } from "plaid";
 
 //const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[@!?&.*%$])(?=.*\d)$/;
 //constants
@@ -14,6 +16,81 @@ const dobRegex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const isAxiosError = (error: unknown): error is AxiosError => {
+  return (error as AxiosError).isAxiosError === true;
+};
+
+// Function to handle errors and throw custom exceptions
+export const handlePlaidError = (plaidError: PlaidErrorResponse, accessToken: string) => {
+  switch (plaidError.error_code) {
+    case "INVALID_ACCESS_TOKEN":
+      throw  createError('reauthenticate', "User login required. Please re-authenticate.", accessToken);
+    case "ITEM_LOGIN_REQUIRED":
+      throw createError('reauthenticate', "User login required. Please re-authenticate.", accessToken);
+    case "ADDITIONAL_CONSENT_REQUIRED":
+      if (plaidError.error_message === ERROR_TYPES.PRODUCT_TRANSACTIONS){
+        throw createError('addConsent', ERROR_TYPES.PRODUCT_TRANSACTIONS, accessToken);
+      }
+     
+    default:
+      throw createError('displayError', plaidError.error_message);
+  }
+};
+// Define error types
+export const ERROR_TYPES = {
+  INVALID_TOKEN: 'INVALID_TOKEN',
+  DISPLAY_ERROR: 'DISPLAY_ERROR',
+  CONSENT_REQUIRED: 'ADDITIONAL_CONSENT_REQUIRED',
+  PRODUCT_TRANSACTIONS: 'client does not have user consent to access the PRODUCT_TRANSACTIONS product'
+};
+
+// Custom error function
+export const createError = (
+  action: 'reauthenticate' | 'displayError' | 'addConsent',
+  message: string,
+  token?: string
+) => ({
+  action,
+  message,
+  token,
+});
+
+//type guard for create Error
+export const isCreateError = (error: any): error is  CreateError => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'action' in error &&
+    'message' in error &&
+    (error.action === 'reauthenticate' || error.action === 'displayError' ||  error.action === 'addConsent')
+  );
+};
+
+//type guard for error action 
+export const isPlaidErrorAction = (error: unknown): error is PlaidErrorAction => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'action' in error &&
+    'message' in error
+  );
+};
+
+// Define the TokenParams interface
+export interface TokenParams {
+  user: {
+    client_user_id: string;
+  };
+  client_name: string;
+  language: string;
+  products: Products[];
+  country_codes: CountryCode[];
+  access_token?: string;   // Optional property for update mode
+  additional_consented_products?: Products[];
+} 
+
+
 export function paymentTransferFormSchema() {
   return z.object({
     email: z.string().email("Invalid email address"),

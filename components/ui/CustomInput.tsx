@@ -30,7 +30,7 @@ const CustomInput = ({
             <FormLabel className="form-label">{fieldLabel}</FormLabel>
             <div className="flex flex-col w-full gap-2">
               <FormControl>
-                <Input placeholder={fieldPlaceholder} type={ fieldName === 'password' ? 'password' : 'text'} {...field} />
+                <Input id={fieldName} placeholder={fieldPlaceholder} type={ fieldName === 'password' ? 'password' : 'text'} {...field} />
               </FormControl>
               <FormMessage className="form-message" />
             </div>
