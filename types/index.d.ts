@@ -6,6 +6,30 @@ declare type SearchParamProps = {
 };
 
 // ========================================
+declare interface CreateError {
+  action: 'reauthenticate' | 'displayError';
+  message: string;
+  token?: string;
+}
+
+declare interface PlaidErrorResponse {
+  display_message: string | null;
+  error_code: string;
+  error_message: string;
+  error_type: string;
+  request_id: string;
+  suggested_action: string | null;
+}
+
+declare interface PlaidToken {
+  access_token: string;
+}
+
+declare interface PlaidErrorAction {
+  action: 'reauthenticate' | 'displayError' | "addConsent",
+  message: string,
+  token?: string
+}
 
 
 declare type SignUpParams = {
@@ -176,8 +200,9 @@ declare interface PaginationProps {
 
 declare interface PlaidLinkProps {
   user: User;
-  variant?: "primary" | "ghost";
+  variant: "primary" | "ghost" | "reauthenticate" | "addConsent" | "default";
   dwollaCustomerId?: string;
+  accesstoken?: string 
 }
 
 // declare type User = sdk.Models.Document & {

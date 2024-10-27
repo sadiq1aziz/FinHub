@@ -1,7 +1,9 @@
 import BankCard from "@/components/ui/BankCard";
 import HeaderBox from "@/components/ui/HeaderBox";
+import InfoTooltip from "@/components/ui/InfoToolTip";
 import { getAccounts } from "@/lib/actions/banks.actions";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { card_message } from "@/lib/utils";
 import React from "react";
 
 const MyBanks = async () => {
@@ -28,10 +30,13 @@ const MyBanks = async () => {
   return (
     <section className="my-banks">
       <div className="my-banks-snippet">
+      <div className="flex items-end gap-2">
         <HeaderBox
           title="My Banks"
           subtext="Browse through your bank accounts here"
         />
+        <InfoTooltip message={card_message}/>
+        </div>
       </div>
       <div className="space-y-6">
         <h2 className="header-2">Your Cards</h2>

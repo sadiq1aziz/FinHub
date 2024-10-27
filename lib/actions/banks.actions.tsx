@@ -9,8 +9,13 @@ import {
   TransferType,
 } from "plaid";
 
-import { plaidClient } from '../plaid';
-import { parseStringify } from "../utils";
+import { plaidClient } from "../plaid";
+import {
+  handlePlaidError,
+  isAxiosError,
+  isCreateError,
+  parseStringify,
+} from "../utils";
 import { getBanks, getBank } from "./user.actions";
 import { getTransactionsByBankId } from "./transaction.actions";
 
@@ -27,7 +32,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
           access_token: bank.accessToken,
         });
         const accountData = accountsResponse.data.accounts[0];
-  
+
         // get institution info from plaid
         const institution = await getInstitution({
           institutionId: accountsResponse.data.item.institution_id!,
@@ -55,10 +60,21 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
     const totalCurrentBalance = accounts.reduce((total, account) => {
       return total + account.currentBalance;
     }, 0);
-  
+
     return parseStringify({ data: accounts, totalBanks, totalCurrentBalance });
   } catch (error) {
     console.error("An error occurred while getting the accounts:", error);
+    if (isAxiosError(error)) {
+      if (error.response) {
+        const plaidError = error.response.data as PlaidErrorResponse;
+        const plaidToken = JSON.parse(error.response.config.data) as PlaidToken; // Parse the data and cast to PlaidToken
+        handlePlaidError(plaidError, plaidToken.access_token);
+      }
+    } else if (isCreateError(error)) {
+      throw error;
+    } else {
+      console.log("Technical exception from accounts");
+    }
   }
 };
 
@@ -72,14 +88,14 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     const accountsResponse = await plaidClient.accountsGet({
       access_token: bank.accessToken,
     });
-    
+
     const accountData = accountsResponse.data.accounts[0];
     //const transferTransactions = [{ob1:1},{ob2:2}];
     //get transfer transactions from appwrite
     const transferTransactionsData = await getTransactionsByBankId({
       bankId: bank.$id,
     });
-    
+
     console.log("transactionDATA", transferTransactionsData);
     const transferTransactions = transferTransactionsData.documents.map(
       (transferData: Transaction) => ({
@@ -101,7 +117,6 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     const transactions = await getTransactions({
       accessToken: bank?.accessToken,
     });
-
     const account = {
       id: accountData.account_id,
       availableBalance: accountData.balances.available!,
@@ -125,7 +140,18 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       transactions: allTransactions,
     });
   } catch (error) {
-    console.error("An error occurred while getting the account:", error);
+    console.error("An error occurred while getting the account:");
+    if (isAxiosError(error)) {
+      if (error.response) {
+        const plaidError = error.response.data as PlaidErrorResponse;
+        const plaidToken = JSON.parse(error.response.config.data) as PlaidToken; // Parse the data and cast to PlaidToken
+        handlePlaidError(plaidError, plaidToken.access_token);
+      }
+    } else if (isCreateError(error)) {
+      throw error;
+    } else {
+      console.log("Technical exception from account");
+    }
   }
 };
 
@@ -143,7 +169,16 @@ export const getInstitution = async ({
 
     return parseStringify(intitution);
   } catch (error) {
-    console.error("An error occurred while getting the accounts:", error);
+    console.error("An error occurred while getting institutions:");
+    if (isAxiosError(error)) {
+      if (error.response) {
+        const plaidError = error.response.data as PlaidErrorResponse;
+        const plaidToken = JSON.parse(error.response.config.data) as PlaidToken; // Parse the data and cast to PlaidToken
+        handlePlaidError(plaidError, plaidToken.access_token);
+      }
+    } else {
+      console.log("Technical exception from institutions");
+    }
   }
 };
 
@@ -181,7 +216,16 @@ export const getTransactions = async ({
 
     return parseStringify(transactions);
   } catch (error) {
-    console.error("An error occurred while getting the accounts:", error);
+    console.error("An error occurred while getting transactions:");
+    if (isAxiosError(error)) {
+      if (error.response) {
+        const plaidError = error.response.data as PlaidErrorResponse;
+        const plaidToken = JSON.parse(error.response.config.data) as PlaidToken; // Parse the data and cast to PlaidToken
+        handlePlaidError(plaidError, plaidToken.access_token);
+      }
+    } else {
+      console.log("Technical exception from transactions");
+    }
   }
 };
 
@@ -200,8 +244,9 @@ export const createTransfer = async () => {
     },
   };
   try {
-    const transferAuthResponse =
-      await plaidClient.transferAuthorizationCreate(transferAuthRequest);
+    const transferAuthResponse = await plaidClient.transferAuthorizationCreate(
+      transferAuthRequest
+    );
     const authorizationId = transferAuthResponse.data.authorization.id;
 
     const transferCreateRequest: TransferCreateRequest = {
@@ -218,9 +263,15 @@ export const createTransfer = async () => {
     const transfer = responseCreateResponse.data.transfer;
     return parseStringify(transfer);
   } catch (error) {
-    console.error(
-      "An error occurred while creating transfer authorization:",
-      error
-    );
+    console.error("An error occurred while creating transfer:");
+    if (isAxiosError(error)) {
+      if (error.response) {
+        const plaidError = error.response.data as PlaidErrorResponse;
+        const plaidToken = JSON.parse(error.response.config.data) as PlaidToken; // Parse the data and cast to PlaidToken
+        handlePlaidError(plaidError, plaidToken.access_token);
+      }
+    } else {
+      console.log("Technical exception from create transfer");
+    }
   }
 };
