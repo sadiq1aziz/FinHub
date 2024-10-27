@@ -3,7 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
-import { AxiosError } from 'axios';
+import { AxiosError } from "axios";
 import { CountryCode, Products } from "plaid";
 
 //const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[@!?&.*%$])(?=.*\d)$/;
@@ -22,32 +22,74 @@ export const isAxiosError = (error: unknown): error is AxiosError => {
 };
 
 // Function to handle errors and throw custom exceptions
-export const handlePlaidError = (plaidError: PlaidErrorResponse, accessToken: string) => {
+export const handlePlaidError = (
+  plaidError: PlaidErrorResponse,
+  accessToken: string
+) => {
   switch (plaidError.error_code) {
     case "INVALID_ACCESS_TOKEN":
-      throw  createError('reauthenticate', "User login required. Please re-authenticate.", accessToken);
+      throw createError(
+        "reauthenticate",
+        "User login required. Please re-authenticate.",
+        accessToken
+      );
     case "ITEM_LOGIN_REQUIRED":
-      throw createError('reauthenticate', "User login required. Please re-authenticate.", accessToken);
+      throw createError(
+        "reauthenticate",
+        "User login required. Please re-authenticate.",
+        accessToken
+      );
     case "ADDITIONAL_CONSENT_REQUIRED":
-      if (plaidError.error_message === ERROR_TYPES.PRODUCT_TRANSACTIONS){
-        throw createError('addConsent', ERROR_TYPES.PRODUCT_TRANSACTIONS, accessToken);
+      if (plaidError.error_message === ERROR_TYPES.PRODUCT_TRANSACTIONS) {
+        throw createError(
+          "addConsent",
+          ERROR_TYPES.PRODUCT_TRANSACTIONS,
+          accessToken
+        );
       }
-     
+
     default:
-      throw createError('displayError', plaidError.error_message);
+      throw createError("displayError", plaidError.error_message);
   }
 };
+
+//tooltip message
+export const card_message: string = `You can obtain funds by copying the shareable Id present at the bottom of each card. This is an encoded Id of your account
+            that you can share with friends or trusted parties that they will use to send money to your account and vice versa via the transfer funds section.`;
+export const signup_message: string = `On signing up, you will be required to connect to a bank account to further explore the application features. Kindly note 
+            that since this is a sandbox server connection, it is recommended to authenticate using the Chase Banking
+            network. Credentials will be authenticated via Platypus. Plaid Savings and Checking accounts are usually configured
+            with data on Plaid's test network. user_good can be used to pass credential check in.`;
+export const transfer_email: string = `The email of the receipient needs to be already signed up with this application for you to be able to transfer funds `;
+
+// // Define an array of images with src and alt text
+// export const images = [
+//   {
+//     src: "/icons/auth-res.png",
+//     alt: "Auth image background 1",
+//   },
+//   {
+//     src: "/icons/auth-res2.png",
+//     alt: "Auth image background 2",
+//   },
+//   {
+//     src: "/icons/auth-res3.png",
+//     alt: "Auth image background 3",
+//   },
+// ];
+
 // Define error types
 export const ERROR_TYPES = {
-  INVALID_TOKEN: 'INVALID_TOKEN',
-  DISPLAY_ERROR: 'DISPLAY_ERROR',
-  CONSENT_REQUIRED: 'ADDITIONAL_CONSENT_REQUIRED',
-  PRODUCT_TRANSACTIONS: 'client does not have user consent to access the PRODUCT_TRANSACTIONS product'
+  INVALID_TOKEN: "INVALID_TOKEN",
+  DISPLAY_ERROR: "DISPLAY_ERROR",
+  CONSENT_REQUIRED: "ADDITIONAL_CONSENT_REQUIRED",
+  PRODUCT_TRANSACTIONS:
+    "client does not have user consent to access the PRODUCT_TRANSACTIONS product",
 };
 
 // Custom error function
 export const createError = (
-  action: 'reauthenticate' | 'displayError' | 'addConsent',
+  action: "reauthenticate" | "displayError" | "addConsent",
   message: string,
   token?: string
 ) => ({
@@ -57,23 +99,27 @@ export const createError = (
 });
 
 //type guard for create Error
-export const isCreateError = (error: any): error is  CreateError => {
+export const isCreateError = (error: any): error is CreateError => {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'action' in error &&
-    'message' in error &&
-    (error.action === 'reauthenticate' || error.action === 'displayError' ||  error.action === 'addConsent')
+    "action" in error &&
+    "message" in error &&
+    (error.action === "reauthenticate" ||
+      error.action === "displayError" ||
+      error.action === "addConsent")
   );
 };
 
-//type guard for error action 
-export const isPlaidErrorAction = (error: unknown): error is PlaidErrorAction => {
+//type guard for error action
+export const isPlaidErrorAction = (
+  error: unknown
+): error is PlaidErrorAction => {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'action' in error &&
-    'message' in error
+    "action" in error &&
+    "message" in error
   );
 };
 
@@ -86,10 +132,9 @@ export interface TokenParams {
   language: string;
   products: Products[];
   country_codes: CountryCode[];
-  access_token?: string;   // Optional property for update mode
+  access_token?: string; // Optional property for update mode
   additional_consented_products?: Products[];
-} 
-
+}
 
 export function paymentTransferFormSchema() {
   return z.object({
@@ -99,7 +144,7 @@ export function paymentTransferFormSchema() {
     senderBank: z.string().min(4, "Please select a valid bank account"),
     sharableId: z.string().min(8, "Please select a valid sharable Id"),
   });
-};
+}
 // zod is a form validator component
 // Here we enter in the attributes for validation in our form
 export const authFormSchema = (type: string) =>
@@ -187,10 +232,6 @@ export const authFormSchema = (type: string) =>
                 "Last name can only contain letters, spaces, hyphens, or apostrophes",
             }),
   });
-
-
-
-
 
 // FORMAT DATE TIME
 export const formatDateTime = (dateString: Date) => {
